@@ -1,0 +1,67 @@
+:root {
+  --theme-name: 'Simple';
+  --author-name: 'easrng';
+  --author-link: 'https://easrng.net';
+  
+  --styles: default highlight;
+  --s-default: 'Default';
+  --s-highlight: 'Highlight';
+  
+  --options: bgcolor fgcolor;
+  --o-bgcolor-label: 'Background Color';
+  --o-bgcolor-type: color;
+  --o-bgcolor-default: #ffffff;
+  --o-fgcolor-label: 'Text Color';
+  --o-fgcolor-type: color;
+  --o-fgcolor-default: #111111;
+}
+.s-default, #page {
+  background-color: var(--o-bgcolor-value, var(--o-bgcolor-default));
+  color: var(--o-fgcolor-value, var(--o-fgcolor-default));
+}
+.s-highlight {
+  background: #faffd3;
+  color: #3e3200;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-family: "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system;
+  color: #111111;
+  line-height: 1.5;
+  height: 100%;
+}
+body {
+  background: #CFD8DC;
+  display: inline;
+  overflow-x: hidden;
+}
+#page {
+  max-width: 45rem;
+  margin-left: auto;
+  margin-right: auto;
+  background: #fff;
+  box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+  min-height: calc(100% - 1.5rem);
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.block {
+  padding: 0;
+  margin: 0;
+  min-height: 0.125rem;
+  position: relative;
+  width: 100%;
+  contain: content;
+}
+.content {
+  margin: 0.5rem 2%;
+  padding: 0;
+}
