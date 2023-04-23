@@ -18,13 +18,19 @@ export function parsePage(): Page {
       }
     });
     if (type === "html") {
-      block = { type: "html", html: child.children[0].innerHTML, style };
+      block = {
+        type: "html",
+        html: child.children[0].innerHTML,
+        style,
+        uuid: crypto.randomUUID(),
+      };
     } else if (type === "text") {
       block = {
         type: "text",
         text: child.children[0].textContent || "",
         style,
         pre: child.children[0] instanceof HTMLPreElement,
+        uuid: crypto.randomUUID(),
       };
     } else {
       throw new Error("unknown block type");

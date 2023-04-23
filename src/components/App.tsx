@@ -53,6 +53,7 @@ export function App({ parsedPage }: { parsedPage: Page }) {
                 type: "text",
                 text: "New Block",
                 pre: false,
+                uuid: crypto.randomUUID(),
               };
               setPage({ ...page, blocks: [...page.blocks, newData] });
             }}
