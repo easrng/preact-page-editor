@@ -24,15 +24,25 @@ function RenderBlock(
           ["Enter", " ", "ArrowDown", "ArrowUp"].includes(e.key) &&
           e.preventDefault()}
         onKeyUp={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (
+            e.key === "Enter" || e.key === " " || e.key === "ArrowDown" ||
+            e.key === "ArrowUp"
+          ) {
+            const t = e.target as HTMLElement;
             e.preventDefault();
-            toggleEditing();
-          } else if (e.key === "ArrowDown") {
-            e.preventDefault();
-            onMove(1);
-          } else if (e.key === "ArrowUp") {
-            e.preventDefault();
-            onMove(-1);
+            if (document.activeElement === t) {
+              setTimeout(() => {
+                // idk why this is needed but the button was losing focus without it :/
+                t.focus();
+              }, 0);
+            }
+            if (e.key === "Enter" || e.key === " ") {
+              toggleEditing();
+            } else if (e.key === "ArrowDown") {
+              onMove(1);
+            } else if (e.key === "ArrowUp") {
+              onMove(-1);
+            }
           }
         }}
       >
