@@ -34,6 +34,7 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
           "div#themeoptions",
         ) as HTMLDivElement;
         themeOptions.textContent = "";
+        setStyles([["default", "Default"]]);
         if (themeName) {
           setThemeStatusClass("");
           setThemeStatusContent(
