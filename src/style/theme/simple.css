@@ -15,14 +15,6 @@
   --o-fgcolor-type: color;
   --o-fgcolor-default: #111111;
 }
-.s-default, #page {
-  background-color: var(--o-bgcolor-value, var(--o-bgcolor-default));
-  color: var(--o-fgcolor-value, var(--o-fgcolor-default));
-}
-.s-highlight {
-  background: #faffd3;
-  color: #3e3200;
-}
 * {
   box-sizing: border-box;
 }
@@ -64,4 +56,12 @@ body {
 .content {
   margin: 0.5rem 2%;
   padding: 0;
+}
+.s-default, #page {
+  background-color: var(--o-bgcolor-value, var(--o-bgcolor-default));
+  color: var(--o-fgcolor-value, var(--o-fgcolor-default));
+}
+.s-highlight {
+  background: #faffd3;
+  color: #3e3200;
 }

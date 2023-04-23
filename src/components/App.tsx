@@ -2,11 +2,16 @@ import { RenderPage } from "./RenderPage.js";
 import { savePage } from "../convert/pageToHtml.js";
 import A11yDialog from "a11y-dialog";
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { Block, HtmlBlock, Page, TextBlock } from "../types.js";
+import type { Block, Dialogs, HtmlBlock, Page, TextBlock } from "../types.js";
 import { ThemePicker } from "./ThemePicker.js";
 export function App({ parsedPage }: { parsedPage: Page }) {
-  const dialogs = useRef<{ edit?: A11yDialog; settings?: A11yDialog }>({});
+  const [editDialogContent, setEditDialogContent] = useState(null);
+  const dialogs = useRef<Dialogs>({ editDialogContent, setEditDialogContent });
   const [page, setPage] = useState(parsedPage);
+  const [styles, setStyles] = useState<[string, string][]>([[
+    "default",
+    "Default",
+  ]]);
   const editDialog = useRef<HTMLDivElement>(null);
   const settingsDialog = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -32,6 +37,8 @@ export function App({ parsedPage }: { parsedPage: Page }) {
         page={page}
         editor={true}
         onUpdate={(newPage) => setPage(newPage)}
+        dialogs={dialogs}
+        styles={styles}
       />
       <div class="editor-components">
         <div class="edit-footer">
@@ -85,6 +92,7 @@ export function App({ parsedPage }: { parsedPage: Page }) {
                 <span>Close dialog</span>
               </button>
             </div>
+            {editDialogContent}
           </div>
         </div>
         <div
@@ -119,7 +127,11 @@ export function App({ parsedPage }: { parsedPage: Page }) {
               />
               <span>Title</span>
             </label>
-            <ThemePicker page={page} onUpdate={(newPage) => setPage(newPage)} />
+            <ThemePicker
+              page={page}
+              onUpdate={(newPage) => setPage(newPage)}
+              setStyles={setStyles}
+            />
           </div>
         </div>
       </div>

@@ -5,9 +5,10 @@ function link(content: ComponentChildren, href?: string) {
   if (!href) return content;
   return <a href={href}>{content}</a>;
 }
-export function ThemePicker({ page, onUpdate }: {
+export function ThemePicker({ page, onUpdate, setStyles }: {
   page: Page;
   onUpdate: (newPage: Page) => void;
+  setStyles: (newStyles: [string, string][]) => void;
 }) {
   const themeLinkRef = useRef<HTMLLinkElement>(null);
   const [themeStatusContent, setThemeStatusContent] = useState<
@@ -50,9 +51,11 @@ export function ThemePicker({ page, onUpdate }: {
               </b>
             </>,
           );
-          const styles = getThemeMetadata("styles")
-            .split(" ")
-            .map((e) => ["s-" + e, getThemeMetadata("s-" + e)]);
+          setStyles(
+            getThemeMetadata("styles")
+              .split(" ")
+              .map((e) => [e, getThemeMetadata("s-" + e)]),
+          );
           const options = getThemeMetadata("options")
             .split(" ")
             .map((e) => ({
