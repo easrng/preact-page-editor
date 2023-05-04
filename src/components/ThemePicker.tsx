@@ -1,5 +1,5 @@
 import type { ComponentChildren } from "preact";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 import type { Page } from "../types.js";
 function link(content: ComponentChildren, href?: string) {
   if (!href) return content;
@@ -16,19 +16,19 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
   >();
   const [themeStatusClass, setThemeStatusClass] = useState<string>("");
   const [options, setOptions] = useState([]);
+  const getThemeMetadata = useCallback(function (name: string, raw: boolean) {
+    const s = getComputedStyle(document.documentElement).getPropertyValue(
+      "--" + name,
+    );
+    if (raw) return s;
+    return s.trim().replace(/^['"]|['"]$/g, "");
+  }, []);
   useEffect(() => {
     const themeLink = themeLinkRef.current!;
     const handlerFor = (type: "load" | "error") =>
       function () {
         const oldThemeLink = document.querySelector("link#theme");
         if (oldThemeLink) oldThemeLink.remove();
-        const getThemeMetadata = function (name: string, raw?: boolean) {
-          const s = getComputedStyle(document.documentElement).getPropertyValue(
-            "--" + name,
-          );
-          if (raw) return s;
-          return s.trim().replace(/^['"]|['"]$/g, "");
-        };
         const themeName = getThemeMetadata("theme-name");
         setStyles([["default", "Default"]]);
         setOptions([]);
@@ -61,7 +61,6 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
               label: getThemeMetadata("o-" + e + "-label"),
               type: getThemeMetadata("o-" + e + "-type"),
               default: getThemeMetadata("o-" + e + "-default"),
-              value: getThemeMetadata("o-" + e + "-value", true),
             }));
           setOptions(options);
         } else if (themeLink.sheet && type !== "error") {
@@ -90,7 +89,6 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
           type="url"
           placeholder=" "
           onInput={(event) => {
-            const themeLink = themeLinkRef.current!;
             let url;
             const value = (event.target as HTMLInputElement).value;
             onUpdate({
@@ -122,9 +120,8 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
             <input
               type={e.type}
               placeholder=" "
-              value={document.documentElement.style.getPropertyValue(
-                "--o-" + e.name + "-value",
-              ) || e.default}
+              value={getThemeMetadata("o-" + e.name + "-value", true).trim() ||
+                e.default}
               onInput={(event) => {
                 document.documentElement.style.setProperty(
                   "--o-" + e.name + "-value",
