@@ -16,7 +16,7 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
   >();
   const [themeStatusClass, setThemeStatusClass] = useState<string>("");
   const [options, setOptions] = useState([]);
-  const getThemeMetadata = useCallback(function (name: string, raw: boolean) {
+  const getThemeMetadata = useCallback(function (name: string, raw?: boolean) {
     const s = getComputedStyle(document.documentElement).getPropertyValue(
       "--" + name,
     );
