@@ -21,7 +21,9 @@ export default {
         { src: "src/style", dest: "dist" },
       ],
     }),
-    nodeResolve(),
+    nodeResolve({
+      browser: true,
+    }),
     commonjs(),
     process.env.MINIFY && terser(),
     visualizer({
