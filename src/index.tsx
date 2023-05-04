@@ -7,10 +7,16 @@ function EditButtonFooter() {
   const ele = useRef<HTMLDivElement>(null);
   const styles = useRef<HTMLLinkElement>(null);
   useEffect(() => {
-    document.head.appendChild(styles.current);
     styles.current.addEventListener("load", () => {
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        ele.current!.animate([
+          { opacity: "0" },
+          { opacity: "1" },
+        ], { duration: 500 });
+      }
       ele.current!.style.opacity = "1";
     });
+    document.head.appendChild(styles.current);
   }, []);
   return (
     <div class="editor-components">

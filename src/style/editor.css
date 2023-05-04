@@ -46,7 +46,6 @@
 }
 .editor-components .edit-button-footer {
   --matter-theme-rgb: 84, 110, 122;
-  transition: 0.5s opacity ease;
 }
 .editor-components .matter-button-outlined {
   position: relative;
