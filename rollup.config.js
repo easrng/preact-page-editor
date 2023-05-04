@@ -23,7 +23,7 @@ export default {
     }),
     nodeResolve(),
     commonjs(),
-    //terser(),
+    process.env.MINIFY && terser(),
     visualizer({
       filename: "dist/stats.html",
     }),
