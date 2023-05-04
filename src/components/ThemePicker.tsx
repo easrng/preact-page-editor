@@ -15,11 +15,11 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
     ComponentChildren
   >();
   const [themeStatusClass, setThemeStatusClass] = useState<string>("");
+  const [options, setOptions] = useState([]);
   useEffect(() => {
     const themeLink = themeLinkRef.current!;
     const handlerFor = (type: "load" | "error") =>
       function () {
-        console.log(type);
         const oldThemeLink = document.querySelector("link#theme");
         if (oldThemeLink) oldThemeLink.remove();
         const getThemeMetadata = function (name: string, raw?: boolean) {
@@ -30,11 +30,8 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
           return s.trim().replace(/^['"]|['"]$/g, "");
         };
         const themeName = getThemeMetadata("theme-name");
-        const themeOptions = document.querySelector(
-          "div#themeoptions",
-        ) as HTMLDivElement;
-        themeOptions.textContent = "";
         setStyles([["default", "Default"]]);
+        setOptions([]);
         if (themeName) {
           setThemeStatusClass("");
           setThemeStatusContent(
@@ -66,32 +63,7 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
               default: getThemeMetadata("o-" + e + "-default"),
               value: getThemeMetadata("o-" + e + "-value", true),
             }));
-          options.map((e) => {
-            const label = document.createElement("label");
-            label.className = "matter-input-filled oi-type-" + e.type;
-            const input = document.createElement("input");
-            input.type = e.type;
-            input.placeholder = " ";
-            input.id = "oi-" + e.name;
-            input.value = document.documentElement.style.getPropertyValue(
-              "--o-" + e.name + "-value",
-            ) || e.default;
-            input.oninput = () => {
-              document.documentElement.style.setProperty(
-                "--o-" + e.name + "-value",
-                input.value,
-              );
-              onUpdate({
-                ...page,
-                cssProps: document.documentElement.getAttribute("style") || "",
-              });
-            };
-            const name = document.createElement("SPAN");
-            name.textContent = e.label;
-            label.appendChild(input);
-            label.appendChild(name);
-            themeOptions.appendChild(label);
-          });
+          setOptions(options);
         } else if (themeLink.sheet && type !== "error") {
           setThemeStatusClass("warning");
           setThemeStatusContent("That CSS file doesn't include theme metadata");
@@ -104,6 +76,7 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
     themeLink.addEventListener("load", handlerFor("load"));
     if (themeLink.sheet) themeLink.dispatchEvent(new Event("load"));
   }, []);
+  console.log(options);
   return (
     <>
       <link
@@ -144,7 +117,31 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
       <div class={themeStatusClass} id="themestatus">
         {themeStatusContent}
       </div>
-      <div id="themeoptions"></div>
+      <div>
+        {options.map((e) => (
+          <label class={"matter-input-filled oi-type-" + e.type}>
+            <input
+              type={e.type}
+              placeholder=" "
+              value={document.documentElement.style.getPropertyValue(
+                "--o-" + e.name + "-value",
+              ) || e.default}
+              onInput={(event) => {
+                document.documentElement.style.setProperty(
+                  "--o-" + e.name + "-value",
+                  (event.target as HTMLInputElement).value,
+                );
+                onUpdate({
+                  ...page,
+                  cssProps: document.documentElement.getAttribute("style") ||
+                    "",
+                });
+              }}
+            />
+            <span>{e.label}</span>
+          </label>
+        ))}
+      </div>
     </>
   );
 }
