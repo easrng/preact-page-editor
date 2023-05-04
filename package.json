@@ -1,6 +1,7 @@
 {
   "scripts": {
     "dev": "rollup -c -w",
+    "build": "rollup -c",
     "serve": "serve dist",
     "fmt": "deno fmt && git add --all"
   },
