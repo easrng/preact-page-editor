@@ -76,7 +76,6 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
     themeLink.addEventListener("load", handlerFor("load"));
     if (themeLink.sheet) themeLink.dispatchEvent(new Event("load"));
   }, []);
-  console.log(options);
   return (
     <>
       <link

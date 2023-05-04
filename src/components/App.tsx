@@ -16,40 +16,44 @@ export function App({ parsedPage }: { parsedPage: Page }) {
   const settingsDialog = useRef<HTMLDivElement>(null);
   useEffect(() => {
     function setupAnimations(dialog) {
-      dialog.on("hide", async (event) => {
-        const real = [...dialog._listeners["hide"]];
-        while (dialog._listeners["hide"].pop()) {}
-        await Promise.resolve();
-        for (let item of real) dialog._listeners["hide"].push(item);
-        const el = dialog.$el as HTMLElement;
-        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      (dialog._listeners["hide"] = dialog._listeners["hide"] || []).unshift(
+        async (event) => {
+          const real = [...dialog._listeners["hide"]];
+          while (dialog._listeners["hide"].pop()) {}
+          const el = dialog.$el as HTMLElement;
           el.style.display = "flex";
-          await Promise.all([
-            el.querySelector(".dialog-overlay").animate([
-              { opacity: "1" },
-              { opacity: "0" },
-            ], {
-              duration: 150,
-              iterations: 1,
-              easing: "linear",
-              fill: "forwards",
-            }).finished,
-            el.querySelector(".dialog-content").animate([
-              { opacity: "1" },
-              { opacity: "0" },
-            ], {
-              duration: 75,
-              iterations: 1,
-              easing: "linear",
-              fill: "forwards",
-            }).finished,
-          ]);
+          await new Promise((cb) => setTimeout(cb, 0));
+          for (let item of real) dialog._listeners["hide"].push(item);
+          if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            const content = el.querySelector(".dialog-content") as HTMLElement;
+            await Promise.all([
+              el.querySelector(".dialog-overlay").animate([
+                { opacity: "1" },
+                { opacity: "0" },
+              ], {
+                duration: 150,
+                iterations: 1,
+                easing: "linear",
+              }).finished,
+              content.animate([
+                { opacity: "1" },
+                { opacity: "0" },
+              ], {
+                duration: 75,
+                iterations: 1,
+                easing: "linear",
+              }).finished.then(() => {
+                content.style.opacity = "0";
+              }),
+            ]);
+            content.style.opacity = "";
+          }
           el.style.display = "";
-        }
-        for (const listener of real.slice(1)) {
-          listener(dialog.$el, event);
-        }
-      });
+          for (const listener of real.slice(1)) {
+            listener(dialog.$el, event);
+          }
+        },
+      );
       dialog.on("show", async () => {
         const el = dialog.$el as HTMLElement;
         if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -61,7 +65,6 @@ export function App({ parsedPage }: { parsedPage: Page }) {
               duration: 150,
               iterations: 1,
               easing: "linear",
-              fill: "forwards",
             }).finished,
             el.querySelector(".dialog-content").animate([
               { opacity: "0" },
@@ -70,7 +73,6 @@ export function App({ parsedPage }: { parsedPage: Page }) {
               duration: 75,
               iterations: 1,
               easing: "linear",
-              fill: "forwards",
             }).finished,
             el.querySelector(".dialog-content").animate([
               { transform: "scale(0.8)" },
@@ -79,7 +81,6 @@ export function App({ parsedPage }: { parsedPage: Page }) {
               duration: 150,
               iterations: 1,
               easing: "cubic-bezier(0, 0, 0.2, 1)",
-              fill: "forwards",
             }).finished,
           ]);
         }

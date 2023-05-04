@@ -185,7 +185,7 @@ function RenderBlock(
                   dialogs.current.edit!.off("hide", hideHandler);
                 };
                 dialogs.current.edit!.on("hide", hideHandler);
-                setEditing(false);
+                dialogs.current.edit!.hide();
               }}
             >
               <span>Delete</span>
