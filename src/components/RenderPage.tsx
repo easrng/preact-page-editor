@@ -44,6 +44,8 @@ function BlockEditor(
     </div>
   );
 }
+import dragEditAnimation from "../dragEditAnimation.js";
+window["dragEditAnimation"] = dragEditAnimation;
 function RenderBlock(
   { block, editor, onUpdate, onMove, dialogs, styles }: {
     block: Block;
@@ -55,13 +57,60 @@ function RenderBlock(
   },
 ) {
   const [editing, setEditing] = useState(false);
+  const handleIconRef = useRef<HTMLSpanElement>();
+  const handleRef = useRef<HTMLDivElement>();
   let handle = null;
+  useEffect(() => {
+    if (!editor) return;
+    let animation: Animation = null;
+    const handle = handleRef.current;
+    const icon = handleIconRef.current;
+    const toPencil = async () => {
+      if (
+        !(animation || matchMedia("(prefers-reduced-motion: reduce)").matches)
+      ) {
+        animation = icon.animate([
+          {
+            backgroundImage: "url(" + dragEditAnimation + ")",
+            backgroundSize: "1464px",
+            backgroundPositionX: "0px",
+          },
+          {
+            backgroundImage: "url(" + dragEditAnimation + ")",
+            backgroundSize: "1464px",
+            backgroundPositionX: "-1440px",
+          },
+        ], { duration: 500, easing: "steps(60)", fill: "forwards" });
+      }
+    };
+    let animatingBack = false;
+    const backToHandle = () => {
+      if (animation && !animatingBack) {
+        animatingBack = true;
+        animation.reverse();
+        animation.finished.then(() => {
+          animation.cancel();
+          animation = null;
+          animatingBack = false;
+        });
+      }
+    };
+    handle.addEventListener("mouseover", () => {
+      if (document.activeElement !== handle) toPencil();
+    });
+    handle.addEventListener("mouseout", () => {
+      if (document.activeElement !== handle) backToHandle();
+    });
+    handle.addEventListener("focus", toPencil);
+    handle.addEventListener("blur", backToHandle);
+  }, [editor]);
   if (editor) {
     const toggleEditing = () => setEditing(!editing);
     handle = (
       <div
         class="section-handle matter-icon-button matter-button-text"
         title="drag to reorder, click to edit"
+        ref={handleRef}
         onClick={toggleEditing}
         role="button"
         tabIndex={0}
@@ -91,6 +140,7 @@ function RenderBlock(
           }
         }}
       >
+        <span ref={handleIconRef} />
       </div>
     );
   }
