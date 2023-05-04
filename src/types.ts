@@ -1,17 +1,9 @@
-export interface TextBlock {
+export interface Block {
   style: string;
-  type: "text";
-  text: string;
-  pre: boolean;
+  type: "markdown";
+  markdown: string;
   uuid: string;
 }
-export interface HtmlBlock {
-  style: string;
-  type: "html";
-  html: string;
-  uuid: string;
-}
-export type Block = TextBlock | HtmlBlock;
 export interface Page {
   blocks: Block[];
   title: string;

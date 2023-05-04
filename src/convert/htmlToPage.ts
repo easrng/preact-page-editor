@@ -1,4 +1,5 @@
 import type { Block, Page } from "../types.js";
+import { htmlToMarkdown } from "./markdown.js";
 
 export function parsePage(): Page {
   const main = document.querySelector("#main");
@@ -19,17 +20,22 @@ export function parsePage(): Page {
     });
     if (type === "html") {
       block = {
-        type: "html",
-        html: child.children[0].innerHTML,
+        type: "markdown",
+        markdown: htmlToMarkdown(child.children[0].innerHTML),
         style,
         uuid: crypto.randomUUID(),
       };
     } else if (type === "text") {
       block = {
-        type: "text",
-        text: child.children[0].textContent || "",
+        type: "markdown",
+        markdown: htmlToMarkdown(
+          (child.children[0] instanceof HTMLPreElement ? "<pre>" : "") +
+            Object.assign(document.createElement("div"), {
+              innerText: child.children[0].textContent || "",
+            }).innerHTML +
+            (child.children[0] instanceof HTMLPreElement ? "</pre>" : ""),
+        ),
         style,
-        pre: child.children[0] instanceof HTMLPreElement,
         uuid: crypto.randomUUID(),
       };
     } else {

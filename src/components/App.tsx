@@ -2,7 +2,7 @@ import { RenderPage } from "./RenderPage.js";
 import { savePage } from "../convert/pageToHtml.js";
 import A11yDialog from "a11y-dialog";
 import { useEffect, useRef, useState } from "preact/hooks";
-import type { Block, Dialogs, HtmlBlock, Page, TextBlock } from "../types.js";
+import type { Block, Dialogs, Page } from "../types.js";
 import { ThemePicker } from "./ThemePicker.js";
 export function App({ parsedPage }: { parsedPage: Page }) {
   const [editDialogContent, setEditDialogContent] = useState(null);
@@ -131,11 +131,10 @@ export function App({ parsedPage }: { parsedPage: Page }) {
             class="matter-icon-button matter-button-contained"
             id="addblockbutton"
             onClick={() => {
-              const newData: TextBlock = {
+              const newData: Block = {
                 style: "default",
-                type: "text",
-                text: "New Block",
-                pre: false,
+                type: "markdown",
+                markdown: "New Block",
                 uuid: crypto.randomUUID(),
               };
               setPage({ ...page, blocks: [...page.blocks, newData] });

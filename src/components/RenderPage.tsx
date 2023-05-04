@@ -1,7 +1,7 @@
 import { MutableRef, useEffect, useRef, useState } from "preact/hooks";
-import { createPortal } from "preact/compat";
 import type { Block, Dialogs, Page } from "../types.js";
 import Sortable from "sortablejs";
+import { markdownToHtml } from "../convert/markdown.js";
 function BlockEditor(
   { setBlock, block, styles }: {
     block: Block;
@@ -27,79 +27,20 @@ function BlockEditor(
           ))}
         </select>
       </label>
-      <label>
-        Type:
-        <select
-          value={block.type}
-          onChange={(e) => {
-            const newType = (e.target as HTMLSelectElement)
-              .value as Block["type"];
+      <label class="matter-input-filled">
+        <textarea
+          placeholder=" "
+          value={block.markdown}
+          onInput={(e) => {
+            const newMarkdown = (e.target as HTMLTextAreaElement).value;
             setBlock({
-              ...(newType === "text"
-                ? {
-                  type: "text",
-                  text: block.type === "text" ? block.text : block.html,
-                  pre: false,
-                }
-                : {
-                  type: "html",
-                  html: block.type === "text" ? block.text : block.html,
-                }),
-              style: block.style,
-              uuid: block.uuid,
+              ...block,
+              markdown: newMarkdown,
             });
           }}
-        >
-          <option value="text">Text</option>
-          <option value="html">HTML</option>
-        </select>
+        />
+        <span>Markdown</span>
       </label>
-      {block.type === "text"
-        ? (
-          <label class="matter-input-filled">
-            <textarea
-              placeholder=" "
-              value={block.text}
-              onInput={(e) => {
-                const newText = (e.target as HTMLTextAreaElement).value;
-                setBlock({
-                  ...block,
-                  text: newText,
-                });
-              }}
-            />
-            <span>Text</span>
-          </label>
-        )
-        : (
-          <label class="matter-input-filled">
-            <textarea
-              placeholder=" "
-              value={block.html}
-              onInput={(e) => {
-                const newHtml = (e.target as HTMLTextAreaElement).value;
-                setBlock({
-                  ...block,
-                  html: newHtml,
-                });
-              }}
-            />
-            <span>HTML</span>
-          </label>
-        )}
-      {block.type === "text" && (
-        <label class="matter-checkbox">
-          <input
-            type="checkbox"
-            checked={block.pre}
-            onChange={(e) => {
-              const newPre = (e.target as HTMLInputElement).checked;
-              setBlock({ ...block, pre: newPre });
-            }}
-          />
-          <span>Preformatted</span>
-        </label>
-      )}
     </div>
   );
 }
@@ -153,7 +94,7 @@ function RenderBlock(
       </div>
     );
   }
-  const Tag = block.type == "text" && block.pre ? "pre" : "div";
+  const Tag = "div";
   if (editor) {
     useEffect(() => {
       console.log("created " + block.uuid);
@@ -200,21 +141,16 @@ function RenderBlock(
   }
   return (
     <div
-      class={"block b-" +
-        block.type +
+      class={"block b-html" +
         (block.style ? " s-" + block.style : "")}
       key={block.uuid}
     >
       {handle}
-      {block.type == "html"
-        ? (
-          <div
-            dangerouslySetInnerHTML={{ __html: block.html }}
-            class="content"
-          >
-          </div>
-        )
-        : <Tag class="content">{block.text}</Tag>}
+      <div
+        dangerouslySetInnerHTML={{ __html: markdownToHtml(block.markdown) }}
+        class="content"
+      >
+      </div>
     </div>
   );
 }
