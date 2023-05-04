@@ -210,39 +210,28 @@
 .editor-components .dialog-container,
 .editor-components .dialog-overlay {
   position: fixed;
-  /* 1 */
   top: 0;
-  /* 1 */
   right: 0;
-  /* 1 */
   bottom: 0;
-  /* 1 */
   left: 0;
-  /* 1 */
 }
 .editor-components .dialog-container {
   z-index: 2;
-  /* 1 */
   display: flex;
-  /* 2 */
   align-items: center;
   flex-direction: column;
 }
 .editor-components .dialog-container[aria-hidden="true"] {
   display: none;
-  /* 1 */
 }
 .editor-components .dialog-overlay {
   background-color: rgba(0, 0, 0, 0.32);
-  /* 1 */
+  user-select: none;
 }
 .editor-components .dialog-content {
   position: fixed;
-  /* 1 */
   bottom: 0;
-  /* 2 */
   background-color: white;
-  /* 3 */
   width: 100%;
   border-top-right-radius: 26px;
   border-top-left-radius: 26px;
