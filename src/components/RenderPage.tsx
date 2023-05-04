@@ -2,7 +2,6 @@ import { MutableRef, useEffect, useRef, useState } from "preact/hooks";
 import { createPortal } from "preact/compat";
 import type { Block, Dialogs, Page } from "../types.js";
 import Sortable from "sortablejs";
-import A11yDialog from "a11y-dialog";
 function BlockEditor(
   { setBlock, block, styles }: {
     block: Block;
@@ -176,7 +175,26 @@ function RenderBlock(
     useEffect(() => {
       if (!editing) return;
       dialogs.current.setEditDialogContent(
-        <BlockEditor block={block} setBlock={onUpdate} styles={styles} />,
+        {
+          header: (
+            <button
+              class="matter-icon-button matter-button-text deletebutton"
+              onClick={() => {
+                const hideHandler = () => {
+                  onUpdate(null);
+                  dialogs.current.edit!.off("hide", hideHandler);
+                };
+                dialogs.current.edit!.on("hide", hideHandler);
+                setEditing(false);
+              }}
+            >
+              <span>Delete</span>
+            </button>
+          ),
+          body: (
+            <BlockEditor block={block} setBlock={onUpdate} styles={styles} />
+          ),
+        },
       );
     }, [editing, block]);
   }
@@ -223,11 +241,9 @@ export function RenderPage(
       onUpdate={(newBlock) => {
         const newPage = {
           ...page,
-          blocks: [
-            ...page.blocks.slice(0, index),
-            newBlock,
-            ...page.blocks.slice(index + 1),
-          ],
+          blocks: newBlock
+            ? page.blocks.map((e) => e === block ? newBlock : e)
+            : page.blocks.filter((e) => e !== block),
         };
         onUpdate && onUpdate(newPage);
       }}

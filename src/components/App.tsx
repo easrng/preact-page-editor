@@ -15,11 +15,86 @@ export function App({ parsedPage }: { parsedPage: Page }) {
   const editDialog = useRef<HTMLDivElement>(null);
   const settingsDialog = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    dialogs.current.edit = new A11yDialog(
-      editDialog.current!,
+    function setupAnimations(dialog) {
+      dialog.on("hide", async (event) => {
+        const real = [...dialog._listeners["hide"]];
+        while (dialog._listeners["hide"].pop()) {}
+        await Promise.resolve();
+        for (let item of real) dialog._listeners["hide"].push(item);
+        const el = dialog.$el as HTMLElement;
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          el.style.display = "flex";
+          await Promise.all([
+            el.querySelector(".dialog-overlay").animate([
+              { opacity: "1" },
+              { opacity: "0" },
+            ], {
+              duration: 150,
+              iterations: 1,
+              easing: "linear",
+              fill: "forwards",
+            }).finished,
+            el.querySelector(".dialog-content").animate([
+              { opacity: "1" },
+              { opacity: "0" },
+            ], {
+              duration: 75,
+              iterations: 1,
+              easing: "linear",
+              fill: "forwards",
+            }).finished,
+          ]);
+          el.style.display = "";
+        }
+        for (const listener of real.slice(1)) {
+          listener(dialog.$el, event);
+        }
+      });
+      dialog.on("show", async () => {
+        const el = dialog.$el as HTMLElement;
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          await Promise.all([
+            el.querySelector(".dialog-overlay").animate([
+              { opacity: "0" },
+              { opacity: "1" },
+            ], {
+              duration: 150,
+              iterations: 1,
+              easing: "linear",
+              fill: "forwards",
+            }).finished,
+            el.querySelector(".dialog-content").animate([
+              { opacity: "0" },
+              { opacity: "1" },
+            ], {
+              duration: 75,
+              iterations: 1,
+              easing: "linear",
+              fill: "forwards",
+            }).finished,
+            el.querySelector(".dialog-content").animate([
+              { transform: "scale(0.8)" },
+              { transform: "scale(1)" },
+            ], {
+              duration: 150,
+              iterations: 1,
+              easing: "cubic-bezier(0, 0, 0.2, 1)",
+              fill: "forwards",
+            }).finished,
+          ]);
+        }
+      });
+      return dialog;
+    }
+    dialogs.current.edit = setupAnimations(
+      new A11yDialog(
+        editDialog.current!,
+      ),
     );
-    dialogs.current.settings = new A11yDialog(
-      settingsDialog.current!,
+    dialogs.current.settings = setupAnimations(
+      new A11yDialog(
+        settingsDialog.current!,
+      ),
     );
   }, []);
   useEffect(() => {
@@ -85,6 +160,7 @@ export function App({ parsedPage }: { parsedPage: Page }) {
           <div class="dialog-content" role="document">
             <div class="dialog-header">
               <h1 id="edit-block-title">Edit</h1>
+              {editDialogContent?.header}
               <button
                 class="matter-icon-button matter-button-text closebutton"
                 data-a11y-dialog-hide
@@ -92,7 +168,7 @@ export function App({ parsedPage }: { parsedPage: Page }) {
                 <span>Close dialog</span>
               </button>
             </div>
-            {editDialogContent}
+            {editDialogContent?.body}
           </div>
         </div>
         <div

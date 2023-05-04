@@ -250,6 +250,7 @@
   box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
   padding-top: 8px;
   padding-left: 14px;
+  transform-origin: bottom center;
 }
 .editor-components .dialog-header {
   display: flex;
@@ -265,6 +266,9 @@
 }
 .editor-components .closebutton span {
   background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNMTkgNi40MUwxNy41OSA1IDEyIDEwLjU5IDYuNDEgNSA1IDYuNDEgMTAuNTkgMTIgNSAxNy41OSA2LjQxIDE5IDEyIDEzLjQxIDE3LjU5IDE5IDE5IDE3LjU5IDEzLjQxIDEyeiIgZmlsbD0iIzVmNjM2OCIvPjwvc3ZnPg==");
+}
+.editor-components .deletebutton span {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0Ij48cGF0aCBkPSJNNiAxOWMwIDEuMS45IDIgMiAyaDhjMS4xIDAgMi0uOSAyLTJWN0g2djEyek0xOSA0aC0zLjVsLTEtMWgtNWwtMSAxSDV2MmgxNFY0eiIgZmlsbD0iIzVmNjM2OCIvPjwvc3ZnPg==");
 }
 .editor-components .matter-input-filled {
   --matter-helper-theme: var(--matter-theme-rgb, var(--matter-primary-rgb, 33, 150, 243));
@@ -385,16 +389,6 @@
       transition-duration: 0.1s;
     }
   }
-}
-.editor-components {
-  /* Box */
-  /* Span */
-  /* Highlight */
-  /* Check Mark */
-  /* Checked, Indeterminate */
-  /* Hover, Focus */
-  /* Active */
-  /* Disabled */
 }
 .editor-components .matter-checkbox {
   --matter-helper-theme: var(--matter-theme-rgb, var(--matter-primary-rgb, 33, 150, 243));

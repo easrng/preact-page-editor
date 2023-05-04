@@ -24,6 +24,12 @@ import type { ComponentChildren } from "preact";
 export type Dialogs = {
   edit?: A11yDialog;
   settings?: A11yDialog;
-  editDialogContent: ComponentChildren;
-  setEditDialogContent: (ComponentChildren?) => void;
+  editDialogContent: {
+    header: ComponentChildren;
+    body: ComponentChildren;
+  };
+  setEditDialogContent: ({ header, body }: {
+    header: ComponentChildren;
+    body: ComponentChildren;
+  }) => void;
 };
