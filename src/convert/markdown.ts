@@ -8,8 +8,8 @@ import rehypeRemark from "rehype-remark";
 export const markdownToHtml = (markdown) => {
   const file = unified()
     .use(remarkParse)
-    .use(remarkRehype)
-    .use(rehypeStringify)
+    .use(remarkRehype, {allowDangerousHtml: true})
+    .use(rehypeStringify, {allowDangerousHtml: true})
     .processSync(markdown);
   return file.toString();
 };
