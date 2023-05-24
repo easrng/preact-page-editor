@@ -6,7 +6,7 @@ const base = new URL(".", import.meta.url).href;
 export function savePage(parsedPage: Page) {
   const doc = new DOMParser().parseFromString(
     String
-      .raw`<!DOCTYPE html><html lang="__LANG__"><head><title>__TITLE__</title><meta charset="utf-8" /><meta content="IE=edge" http-equiv="X-UA-Compatible" /><meta content="width=device-width,initial-scale=1" name="viewport" /><link rel="stylesheet" id="theme" /><script src="${base}editor.js"></script></head><body><div id="page"><div id="main">__CONTENT__</div></div></body></html>`,
+      .raw`<!DOCTYPE html><html lang="__LANG__"><head><title>__TITLE__</title><meta charset="utf-8" /><meta content="IE=edge" http-equiv="X-UA-Compatible" /><meta content="width=device-width,initial-scale=1" name="viewport" /><link rel="stylesheet" id="theme" /><script>window.edit=()=>import("${base}editor.js")</script></head><body><div id="page"><div id="main">__CONTENT__</div></div></body></html>`,
     "text/html",
   );
   doc.documentElement.lang = parsedPage.lang;

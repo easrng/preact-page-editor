@@ -56,6 +56,7 @@ export function ThemePicker({ page, onUpdate, setStyles }: {
           );
           const options = getThemeMetadata("options")
             .split(" ")
+            .filter(Boolean)
             .map((e) => ({
               name: e,
               label: getThemeMetadata("o-" + e + "-label"),

@@ -3,7 +3,7 @@
     "dev": "rollup -c -w",
     "build": "MINIFY=1 rollup -c",
     "serve": "serve dist",
-    "fmt": "deno fmt && git add --all"
+    "fmt": "~/.deno/bin/deno fmt && git add --all"
   },
   "dependencies": {
     "@rollup/plugin-commonjs": "^24.1.0",

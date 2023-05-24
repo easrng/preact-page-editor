@@ -47,6 +47,9 @@
 .editor-components .edit-button-footer {
   --matter-theme-rgb: 84, 110, 122;
 }
+.editor-components .edit-button-footer .matter-button-outlined {
+  background-color: #ffffff;
+}
 .editor-components .matter-button-outlined {
   position: relative;
   display: inline-block;
