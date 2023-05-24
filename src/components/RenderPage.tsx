@@ -1,4 +1,4 @@
-import { MutableRef, useEffect, useRef, useState } from "preact/hooks";
+import { MutableRef, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import type { Block, Dialogs, Page } from "../types.js";
 import Sortable from "sortablejs";
 import { markdownToHtml } from "../convert/markdown.js";
@@ -158,7 +158,6 @@ function RenderBlock(
       };
       dialogs.current.edit!.on("hide", hideHandler);
       return () => {
-        console.log("cleanup");
         dialogs.current.edit!.hide();
         dialogs.current.setEditDialogContent(null);
       };
@@ -189,6 +188,9 @@ function RenderBlock(
       );
     }, [editing, block]);
   }
+  const memoizedHtml = useMemo(() => {
+    return { __html: markdownToHtml(block.markdown) };
+  }, [block.markdown]);
   return (
     <div
       class={"block b-html" +
@@ -197,7 +199,7 @@ function RenderBlock(
     >
       {handle}
       <div
-        dangerouslySetInnerHTML={{ __html: markdownToHtml(block.markdown) }}
+        dangerouslySetInnerHTML={memoizedHtml}
         class="content"
       >
       </div>
