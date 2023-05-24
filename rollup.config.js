@@ -9,7 +9,7 @@ export default {
   input: "src/index.tsx",
   output: {
     file: "dist/editor.js",
-    format: "iife",
+    format: "esm",
   },
   plugins: [
     typescript({

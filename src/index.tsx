@@ -21,14 +21,7 @@ function EditButtonFooter() {
   return (
     <div class="editor-components">
       <link
-        href={new URL(
-          "style/editor.css",
-          (() => {
-            try {
-              return eval("import.meta.url");
-            } catch (e) {}
-          })() || import.meta.url,
-        ).href}
+        href={new URL("style/editor.css", import.meta.url).href}
         rel="stylesheet"
         ref={styles}
       />

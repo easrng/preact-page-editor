@@ -2,14 +2,7 @@ import saveAs from "file-saver";
 import { render } from "preact";
 import { RenderPage } from "../components/RenderPage.js";
 import type { Block, Page } from "../types.js";
-const base = new URL(
-  ".",
-  (() => {
-    try {
-      return eval("import.meta.url");
-    } catch (e) {}
-  })() || import.meta.url,
-).href;
+const base = new URL(".", import.meta.url).href;
 export function savePage(parsedPage: Page) {
   const doc = new DOMParser().parseFromString(
     String
