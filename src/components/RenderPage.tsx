@@ -44,8 +44,6 @@ function BlockEditor(
     </div>
   );
 }
-import dragEditAnimation from "../dragEditAnimation.js";
-window["dragEditAnimation"] = dragEditAnimation;
 function RenderBlock(
   { block, editor, onUpdate, onMove, dialogs, styles }: {
     block: Block;
@@ -57,98 +55,49 @@ function RenderBlock(
   },
 ) {
   const [editing, setEditing] = useState(false);
-  const handleIconRef = useRef<HTMLSpanElement>();
-  const handleRef = useRef<HTMLDivElement>();
   let handle = null;
-  useEffect(() => {
-    if (!editor) return;
-    let animation: Animation = null;
-    const handle = handleRef.current;
-    const icon = handleIconRef.current;
-    const toPencil = async () => {
-      if (
-        !(animation || matchMedia("(prefers-reduced-motion: reduce)").matches)
-      ) {
-        animation = icon.animate([
-          {
-            backgroundImage: "url(" + dragEditAnimation + ")",
-            backgroundSize: "1464px",
-            backgroundPositionX: "0px",
-          },
-          {
-            backgroundImage: "url(" + dragEditAnimation + ")",
-            backgroundSize: "1464px",
-            backgroundPositionX: "-1440px",
-          },
-        ], { duration: 500, easing: "steps(60)", fill: "forwards" });
-      }
-    };
-    let animatingBack = false;
-    const backToHandle = () => {
-      if (animation && !animatingBack) {
-        animatingBack = true;
-        animation.reverse();
-        animation.finished.then(() => {
-          animation.cancel();
-          animation = null;
-          animatingBack = false;
-        });
-      }
-    };
-    handle.addEventListener("mouseover", () => {
-      if (document.activeElement !== handle) toPencil();
-    });
-    handle.addEventListener("mouseout", () => {
-      if (document.activeElement !== handle) backToHandle();
-    });
-    handle.addEventListener("focus", toPencil);
-    handle.addEventListener("blur", backToHandle);
-  }, [editor]);
   if (editor) {
     const toggleEditing = () => setEditing(!editing);
     handle = (
-      <div
-        class="section-handle matter-icon-button matter-button-text"
-        title="drag to reorder, click to edit"
-        ref={handleRef}
-        onClick={toggleEditing}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) =>
-          ["Enter", " ", "ArrowDown", "ArrowUp"].includes(e.key) &&
-          e.preventDefault()}
-        onKeyUp={(e) => {
-          if (
-            e.key === "Enter" || e.key === " " || e.key === "ArrowDown" ||
-            e.key === "ArrowUp"
-          ) {
-            const t = e.target as HTMLElement;
-            e.preventDefault();
-            if (document.activeElement === t) {
-              setTimeout(() => {
-                // idk why this is needed but the button was losing focus without it :/
-                t.focus();
-              }, 0);
+      <div class="section-handle">
+        <button
+          class="matter-icon-button matter-button-text edit-icon"
+          onClick={toggleEditing}
+        >
+          <span>Edit</span>
+        </button>
+        <div
+          class="matter-icon-button matter-button-text drag-handle"
+          title="drag or use arrow keys to reorder"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) =>
+            ["ArrowDown", "ArrowUp"].includes(e.key) &&
+            e.preventDefault()}
+          onKeyUp={(e) => {
+            if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+              const t = e.target as HTMLElement;
+              e.preventDefault();
+              if (document.activeElement === t) {
+                setTimeout(() => {
+                  // idk why this is needed but the button was losing focus without it :/
+                  t.focus();
+                }, 0);
+              }
+              if (e.key === "ArrowDown") {
+                onMove(1);
+              } else if (e.key === "ArrowUp") {
+                onMove(-1);
+              }
             }
-            if (e.key === "Enter" || e.key === " ") {
-              toggleEditing();
-            } else if (e.key === "ArrowDown") {
-              onMove(1);
-            } else if (e.key === "ArrowUp") {
-              onMove(-1);
-            }
-          }
-        }}
-      >
-        <span ref={handleIconRef} />
+          }}
+        >
+          <span />
+        </div>
       </div>
     );
   }
-  const Tag = "div";
   if (editor) {
-    useEffect(() => {
-      console.log("created " + block.uuid);
-    }, []);
     useEffect(() => {
       if (!editing) return;
       dialogs.current.edit!.show();
@@ -258,7 +207,6 @@ export function RenderPage(
     if (editor && mainRef.current) {
       new Sortable(mainRef.current, {
         animation: 150,
-        ghostClass: "dragging",
         handle: ".section-handle",
         onSort: function (event) {
           const page = pageRef.current.page;

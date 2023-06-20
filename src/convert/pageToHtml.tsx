@@ -20,11 +20,12 @@ export function savePage(parsedPage: Page) {
     "href",
     parsedPage.theme,
   );
+  const segs = location.pathname.split("/");
   saveAs(
     new Blob(["<!doctype html>" + doc.documentElement.outerHTML], {
       type: "text/html;charset=utf-8",
     }),
-    (location.pathname.split("/").at(-1) || "index.html").replace(
+    (segs[segs.length - 1] || "index.html").replace(
       /\.html?$/,
       "",
     ) + ".html",

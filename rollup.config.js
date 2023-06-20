@@ -30,4 +30,16 @@ export default {
       filename: "dist/stats.html",
     }),
   ],
+  onwarn(warning, warn) {
+    const ignoredCircular = [
+      "hast-util-to-mdast",
+    ];
+    if (
+      warning.code === "CIRCULAR_DEPENDENCY" &&
+      ignoredCircular.some((d) => warning.ids.some((e) => e.includes(d)))
+    ) {
+      return;
+    }
+    warn(warning);
+  },
 };
