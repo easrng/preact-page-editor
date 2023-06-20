@@ -207,7 +207,7 @@ export function RenderPage(
     if (editor && mainRef.current) {
       new Sortable(mainRef.current, {
         animation: 150,
-        handle: ".section-handle",
+        handle: ".section-handle .drag-handle",
         onSort: function (event) {
           const page = pageRef.current.page;
           const newBlocks = [...page.blocks];
